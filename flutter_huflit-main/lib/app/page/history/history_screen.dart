@@ -16,11 +16,12 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-
   Future<List<BillModel>> _getBills() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await APIRepository().getHistory(prefs.getString('token').toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await APIRepository()
+        .getHistory(prefs.getString('token').toString());
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BillModel>>(
@@ -49,8 +50,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return InkWell(
       onTap: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        var temp = await APIRepository().getHistoryDetail(bill.id, prefs.getString('token').toString());
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryDetail(bill: temp)));
+        var temp = await APIRepository()
+            .getHistoryDetail(bill.id, prefs.getString('token').toString());
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HistoryDetail(bill: temp)));
       },
       child: Card(
         child: Padding(
@@ -68,7 +71,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),    
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -96,7 +99,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Text('DateCreated: ' + bill.dateCreated),
                   ],
                 ),
-              ),            
+              ),
             ],
           ),
         ),

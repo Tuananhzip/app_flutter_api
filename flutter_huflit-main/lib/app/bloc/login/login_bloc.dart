@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:app_api/app/data/api.dart';
 import 'package:app_api/app/data/sharepre.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_api/app/model/user.dart';
 import 'package:bloc/bloc.dart';
@@ -31,8 +34,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         String token =
             await APIRepository().login(event.account, event.password);
         final User userData = await APIRepository().current(token);
-        await saveUser(userData);
-        emit(LoginSuccess());
+        if (await saveUser(userData)) {
+          Logger().i(jsonEncode(userData));
+          emit(LoginSuccess());
+        }
       } catch (e) {
         if (e is Exception) {
           emit(LoginFailure(error: 'Tài khoản mật khẩu không hợp lệ'));
@@ -53,8 +58,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onAutoLogin(AppStarted event, Emitter<LoginState> emit) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('user')!.isNotEmpty) {
-      print("==================>${prefs.getString('user')}");
+    if (prefs.containsKey('user')) {
+      Logger().i(prefs.getString('user'));
       emit(LoginSuccess());
     } else {
       emit(LoginInitial());

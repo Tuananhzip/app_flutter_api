@@ -1,17 +1,20 @@
 import 'dart:ui';
 
-import 'package:app_api/app/bloc/login_bloc.dart';
+import 'package:app_api/app/bloc/login/login_bloc.dart';
+import 'package:app_api/app/components/field_login_register.dart';
 import 'package:app_api/app/config/const.dart';
 import 'package:app_api/app/data/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import '../register.dart';
+import 'register.dart';
 import 'package:app_api/mainpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../data/sharepre.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -45,10 +48,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       MaterialPageRoute(
                           builder: (context) => const Mainpage()));
                 } else if (state is LoginFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(state.error),
-                    duration: const Duration(seconds: 2),
-                  ));
+                  Fluttertoast.showToast(
+                      msg: state.error,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
                 }
               },
               child: BlocBuilder<LoginBloc, LoginState>(
@@ -84,61 +91,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           spaceHeight(x: 2),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: const Border(
-                                    bottom: BorderSide(color: Colors.white))),
-                            child: TextFormField(
-                              controller: accountController,
-                              decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.account_circle),
-                                  filled: true,
-                                  border: UnderlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  labelText: 'Account name',
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 12, 12, 12)),
-                                  hintStyle: TextStyle(
-                                      color: Color.fromARGB(255, 12, 12, 12))),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: const Border(
-                                    bottom: BorderSide(color: Colors.white))),
-                            child: TextFormField(
-                              controller: passwordController,
-                              obscureText: !isVisible,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  labelText: 'Password',
-                                  prefixIcon: const Icon(Icons.password),
-                                  suffixIcon: IconButton(
-                                    icon: isVisible
-                                        ? const Icon(Icons.visibility)
-                                        : const Icon(Icons.visibility_off),
-                                    onPressed: () {
-                                      context
-                                          .read<LoginBloc>()
-                                          .add(TogglePasswordVisibility());
-                                    },
-                                  ),
-                                  border: const UnderlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  labelStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 12, 12, 12)),
-                                  hintStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 12, 12, 12))),
-                            ),
-                          ),
+                          fieldLoginRegister(
+                              textEditingController: accountController,
+                              labelText: 'Account',
+                              iconData: Icons.account_circle),
+                          fieldLoginRegister(
+                              textEditingController: passwordController,
+                              labelText: 'Password',
+                              iconData: Icons.password,
+                              isPassword: !isVisible,
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    context
+                                        .read<LoginBloc>()
+                                        .add(TogglePasswordVisibility());
+                                  },
+                                  icon: Icon(isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off))),
                           spaceHeight(x: 2),
                           Row(
                             children: [
@@ -175,7 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       if (state is LoginLoading)
-                        const Center(child: CircularProgressIndicator())
+                        LoadingAnimationWidget.staggeredDotsWave(
+                          color: Theme.of(context).primaryColor,
+                          size: 20,
+                        ),
                     ],
                   );
                 },

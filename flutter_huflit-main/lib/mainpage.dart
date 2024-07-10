@@ -28,7 +28,7 @@ class _MainpageState extends State<Mainpage> {
     String strUser = pref.getString('user')!;
 
     user = User.fromJson(jsonDecode(strUser));
-    setState(() { });
+    setState(() {});
   }
 
   @override
@@ -47,16 +47,16 @@ class _MainpageState extends State<Mainpage> {
     var nameWidgets = "Home";
     switch (index) {
       case 0:
-       {
-        return HomeBuilder();
-       }
+        {
+          return const HomeBuilder();
+        }
       case 1:
         {
-          return HistoryScreen();
+          return const HistoryScreen();
         }
       case 2:
         {
-          return CartScreen();
+          return const CartScreen();
         }
       case 3:
         {
@@ -134,8 +134,10 @@ class _MainpageState extends State<Mainpage> {
               onTap: () {
                 Navigator.pop(context);
                 _selectedIndex = 0;
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const CategoryList()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CategoryList()));
               },
             ),
             ListTile(
@@ -144,8 +146,10 @@ class _MainpageState extends State<Mainpage> {
               onTap: () {
                 Navigator.pop(context);
                 _selectedIndex = 0;
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const ProductList()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProductList()));
               },
             ),
             ListTile(

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app_api/app/model/api_response.dart';
 import 'package:app_api/app/model/bill.dart';
 import 'package:app_api/app/model/cart.dart';
 import 'package:app_api/app/model/category.dart';
@@ -6,6 +9,7 @@ import 'package:app_api/app/model/register.dart';
 import 'package:app_api/app/model/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class API {
@@ -44,19 +48,26 @@ class APIRepository {
         "schoolYear": user.schoolYear,
         "schoolKey": user.schoolKey,
         "password": user.password,
-        "confirmPassword": user.confirmPassword
+        "confirmPassword": user.confirmPassword,
       });
       Response res = await api.sendRequest.post('/Student/signUp',
           options: Options(headers: header('no token')), data: body);
-      if (res.statusCode == 200) {
-        print("ok");
+      ApiResponse apiResponse = ApiResponse.fromJson(res.data);
+      Logger().d(apiResponse);
+
+      if (apiResponse.data == "AccountID đã tồn tại" && res.statusCode == 200) {
+        print("AccountID đã tồn tại");
+        return "exists";
+      }
+      if (apiResponse.data == "Đăng ký thành công" && res.statusCode == 200) {
+        Logger().e("ok");
         return "ok";
       } else {
         print("fail");
         return "signup fail";
       }
     } catch (ex) {
-      print(ex);
+      Logger().e(ex);
       rethrow;
     }
   }

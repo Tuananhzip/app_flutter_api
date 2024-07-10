@@ -13,16 +13,17 @@ class HistoryDetail extends StatelessWidget {
       body: ListView.builder(
         itemCount: bill.length,
         itemBuilder: (context, index) {
-        var data = bill[index];
-        return Column(
-          children: [
-            Text(data.productName),
-            Text(data.imageUrl),
-            Text(data.price.toString()),
-            Text(data.total.toString()),
-          ],
-        );
-      },),
+          var data = bill[index];
+          return Column(
+            children: [
+              Text(data.productName),
+              Text(data.imageUrl),
+              Text(data.price.toString()),
+              Text(data.total.toString()),
+            ],
+          );
+        },
+      ),
     );
   }
 }
