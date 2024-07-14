@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../data/sharepre.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,7 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Mainpage()));
+                          builder: (context) => const Mainpage(
+                                index: 0,
+                              )));
                 } else if (state is LoginFailure) {
                   Fluttertoast.showToast(
                       msg: state.error,
@@ -145,10 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       if (state is LoginLoading)
-                        LoadingAnimationWidget.staggeredDotsWave(
-                          color: Theme.of(context).primaryColor,
-                          size: 20,
-                        ),
+                        const CircularProgressIndicator(),
                     ],
                   );
                 },

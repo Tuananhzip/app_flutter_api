@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'package:app_api/app/config/const.dart';
 import 'package:app_api/app/data/api.dart';
 import 'package:app_api/app/model/bill.dart';
 import 'package:app_api/app/page/history/history_detail.dart';
@@ -16,6 +17,7 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  Future<List<BillModel>> _futureGetBills = Future.value([]);
   Future<List<BillModel>> _getBills() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await APIRepository()
@@ -23,9 +25,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _futureGetBills = _getBills();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<BillModel>>(
-      future: _getBills(),
+      future: _futureGetBills,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -52,23 +61,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         var temp = await APIRepository()
             .getHistoryDetail(bill.id, prefs.getString('token').toString());
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HistoryDetail(bill: temp)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HistoryDetail(
+              bill: temp,
+              idBill: bill.id,
+              dateCreated: bill.dateCreated,
+            ),
+          ),
+        );
       },
       child: Card(
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
               Container(
-                height: 20,
-                width: 20,
+                width: 50,
                 alignment: Alignment.center,
-                child: Text(
-                  bill.id.toString(),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                child: const CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.lightBlue,
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -78,7 +96,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      bill.fullName,
+                      'Customer: ${bill.fullName}',
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w500,
@@ -86,17 +104,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      NumberFormat('#,##0').format(bill.total),
+                      '${NumberFormat('#,##0').format(bill.total)} VND',
                       style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.normal,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
                         color: Colors.red,
                       ),
                     ),
                     // const SizedBox(height: 4.0),
                     // Text('Category: ${pro.catId}'),
                     const SizedBox(height: 4.0),
-                    Text('DateCreated: ' + bill.dateCreated),
+                    Text('Date Created: ${bill.dateCreated}'),
+                    Text(
+                      'Bill Id: ${bill.id}',
+                      style: styleVerySmall(color: Colors.grey),
+                    ),
                   ],
                 ),
               ),

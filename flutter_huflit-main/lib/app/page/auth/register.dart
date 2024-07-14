@@ -7,7 +7,6 @@ import 'package:app_api/app/page/auth/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:intl/intl.dart';
 
@@ -116,11 +115,7 @@ class _RegisterState extends State<Register> {
           builder: (context, state) {
             return Stack(
               children: [
-                if (state is RegisterLoading)
-                  LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).primaryColor,
-                    size: 20,
-                  ),
+                if (state is RegisterLoading) const CircularProgressIndicator(),
                 Column(
                   children: [
                     fieldLoginRegister(

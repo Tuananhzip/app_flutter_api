@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:app_api/app/bloc/detail/detail_bloc.dart';
 import 'package:app_api/app/config/const.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Detail extends StatefulWidget {
   const Detail({super.key});
@@ -13,79 +16,143 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
-  // khi dùng tham số truyền vào phải khai báo biến trùng tên require
-  User user = User.userEmpty();
-  getDataUser() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String strUser = pref.getString('user')!;
-
-    user = User.fromJson(jsonDecode(strUser));
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getDataUser();
-  }
-
   @override
   Widget build(BuildContext context) {
-    // create style
-    TextStyle mystyle = const TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-      color: Colors.amber,
-    );
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 200,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0),
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage(urlBackgroundProfile),
-                    fit: BoxFit.cover,
-                    opacity: 0.9,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(42),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 3,
+          child: BlocProvider(
+            create: (context) => DetailBloc()..add(GetDetailEvent()),
+            child: BlocBuilder<DetailBloc, DetailState>(
+              builder: (context, state) {
+                if (state is DetailLoading) {
+                  return const CircularProgressIndicator();
+                } else if (state is DetailSuccess) {
+                  final User user = state.user;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30.0),
+                            bottomRight: Radius.circular(30.0),
+                          ),
+                          image: DecorationImage(
+                            image: NetworkImage(urlBackgroundProfile),
+                            fit: BoxFit.cover,
+                            opacity: 0.9,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 3,
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 45,
+                                backgroundImage: NetworkImage(
+                                  user.imageURL != null &&
+                                          user.imageURL!.isNotEmpty
+                                      ? user.imageURL!
+                                      : urlUserDefault,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '${user.fullName}',
+                              style: styleMedium(color: Colors.white),
+                            ),
+                            Text(
+                              'Number Id: ${user.idNumber}',
+                              style: styleSmall(color: Colors.white),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'School Key: ${user.schoolKey}',
+                                  style: styleVerySmall(color: Colors.white),
+                                ),
+                                Text(
+                                  'School Year: ${user.schoolYear}',
+                                  style: styleVerySmall(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        user.imageURL != null && user.imageURL!.isNotEmpty
-                            ? user.imageURL!
-                            : urlUserDefault,
+                      spaceHeight(),
+                      ListTile(
+                        leading: const Icon(Icons.phone_android),
+                        title: Text("Phone number", style: styleVerySmall()),
+                        subtitle:
+                            Text("${user.phoneNumber}", style: styleSmall()),
+                        onTap: () {
+                          Logger().i('Phone number: ${user.phoneNumber}');
+                        },
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              Text("NumberID: ${user.idNumber}", style: mystyle),
-              Text("Fullname: ${user.fullName}", style: mystyle),
-              Text("Phone Number: ${user.phoneNumber}", style: mystyle),
-              Text("Gender: ${user.gender}", style: mystyle),
-              Text("birthDay: ${user.birthDay}", style: mystyle),
-              Text("schoolYear: ${user.schoolYear}", style: mystyle),
-              Text("schoolKey: ${user.schoolKey}", style: mystyle),
-              Text("dateCreated: ${user.dateCreated}", style: mystyle),
-            ],
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Divider(),
+                      ),
+                      spaceHeight(),
+                      ListTile(
+                        leading: const Stack(
+                          children: [
+                            Icon(
+                              Icons.male,
+                              size: 24,
+                            ),
+                            Positioned(
+                              top: 3.8,
+                              right: 2,
+                              child: Icon(Icons.female),
+                            )
+                          ],
+                        ),
+                        title: Text("Gender", style: styleVerySmall()),
+                        subtitle: Text("${user.gender}", style: styleSmall()),
+                        onTap: () {
+                          Logger().i('Gender: ${user.gender}');
+                        },
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Divider(),
+                      ),
+                      spaceHeight(),
+                      ListTile(
+                        leading: const Icon(Icons.cake_outlined),
+                        title: Text("Birthday", style: styleVerySmall()),
+                        subtitle: Text("${user.birthDay}", style: styleSmall()),
+                        onTap: () {
+                          Logger().i('Birthday: ${user.birthDay}');
+                        },
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Divider(),
+                      ),
+                    ],
+                  );
+                } else if (state is DetailFailure) {
+                  Logger().e(state.message);
+                  return Text(state.message);
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
           ),
         ),
       ),

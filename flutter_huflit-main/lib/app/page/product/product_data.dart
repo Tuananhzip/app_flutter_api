@@ -18,10 +18,11 @@ class ProductBuilder extends StatefulWidget {
 }
 
 class _ProductBuilderState extends State<ProductBuilder> {
-
   Future<List<ProductModel>> _getProducts() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await APIRepository().getProduct(prefs.getString('accountID').toString(), prefs.getString('token').toString());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await APIRepository().getProduct(
+        prefs.getString('accountID').toString(),
+        prefs.getString('token').toString());
   }
 
   @override
@@ -51,39 +52,22 @@ class _ProductBuilderState extends State<ProductBuilder> {
   Widget _buildProduct(ProductModel pro, BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Container(
-              height: 20,
-              width: 20,
-              alignment: Alignment.center,
-              child: Text(
-                pro.id.toString(),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             const SizedBox(width: 10),
             Container(
               height: 110,
               width: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(8.0),
                 color: Colors.white,
                 image: DecorationImage(
-                  image: AssetImage(pro.imageUrl),
+                  image: NetworkImage(pro.imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
-              alignment: Alignment.center,
-              child: Image(
-                  width: 128,
-                  height: 128,
-                  fit: BoxFit.cover,
-                  image: FileImage(File(pro.imageUrl))),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -109,20 +93,25 @@ class _ProductBuilderState extends State<ProductBuilder> {
                   // const SizedBox(height: 4.0),
                   // Text('Category: ${pro.catId}'),
                   const SizedBox(height: 4.0),
-                  Text('Description: ' + pro.description),
+                  Text('Description: ${pro.description}'),
                 ],
               ),
             ),
             IconButton(
                 onPressed: () async {
-                    SharedPreferences pref = await SharedPreferences.getInstance();
-                  setState(() async {
-                    await APIRepository().removeProduct(pro.id, pref.getString('accountID').toString() , pref.getString('token').toString());
-                  });
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
+                  await APIRepository().removeProduct(
+                      pro.id,
+                      pref.getString('accountID').toString(),
+                      pref.getString('token').toString());
+                  setState(() {});
                 },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
+                icon: const CircleAvatar(
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
                 )),
             IconButton(
                 onPressed: () {
@@ -140,9 +129,11 @@ class _ProductBuilderState extends State<ProductBuilder> {
                         .then((_) => setState(() {}));
                   });
                 },
-                icon: Icon(
-                  Icons.edit,
-                  color: Colors.yellow.shade800,
+                icon: CircleAvatar(
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.yellow.shade800,
+                  ),
                 ))
           ],
         ),

@@ -119,6 +119,21 @@ class APIRepository {
     }
   }
 
+  Future<List<ProductModel>> getListProductByCatId(
+      String accountID, int categoryID) async {
+    try {
+      Response res = await api.sendRequest.get(
+          '/Product/getListByCatId?accountID=$accountID&categoryID=$categoryID');
+      return res.data
+          .map((e) => ProductModel.fromJson(e))
+          .cast<ProductModel>()
+          .toList();
+    } catch (ex) {
+      Logger().e(ex);
+      rethrow;
+    }
+  }
+
   Future<bool> addCategory(
       CategoryModel data, String accountID, String token) async {
     try {
@@ -311,10 +326,14 @@ class APIRepository {
     try {
       Response res = await api.sendRequest
           .get('/Bill/getHistory', options: Options(headers: header(token)));
-      return res.data
-          .map((e) => BillModel.fromJson(e))
-          .cast<BillModel>()
-          .toList();
+      List<BillModel> billList =
+          res.data.map((e) => BillModel.fromJson(e)).cast<BillModel>().toList();
+      for (var i in billList) {
+        Logger().i(i.dateCreated);
+      }
+      billList.sort((a, b) => b.dateCreated.compareTo(a.dateCreated));
+
+      return billList;
     } catch (ex) {
       print(ex);
       rethrow;

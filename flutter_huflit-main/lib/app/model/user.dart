@@ -70,4 +70,9 @@ class User {
 
     return data;
   }
+
+  @override
+  String toString() {
+    return 'User{idNumber: $idNumber, accountId: $accountId, fullName: $fullName, phoneNumber: $phoneNumber, imageURL: $imageURL, birthDay: $birthDay, gender: $gender, schoolYear: $schoolYear, schoolKey: $schoolKey, dateCreated: $dateCreated, status: $status}';
+  }
 }

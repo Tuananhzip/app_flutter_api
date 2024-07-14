@@ -26,7 +26,7 @@ dev_dependencies:
   file_picker: ^5.5.0
   flutter_bloc: ^8.1.6
   fluttertoast: ^8.2.6
-  loading_animation_widget: ^1.2.1
+  carousel_slider: ^4.2.1
 flutter:
   uses-material-design: true
   assets:

@@ -12,16 +12,17 @@ class CategoryBuilder extends StatefulWidget {
 }
 
 class _CategoryBuilderState extends State<CategoryBuilder> {
-
   Future<List<CategoryModel>> _getCategorys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await APIRepository().getCategory(prefs.getString('accountID').toString(), prefs.getString('token').toString());
+    return await APIRepository().getCategory(
+        prefs.getString('accountID').toString(),
+        prefs.getString('token').toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<CategoryModel>>(
-      future:  _getCategorys(),
+      future: _getCategorys(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -49,20 +50,16 @@ class _CategoryBuilderState extends State<CategoryBuilder> {
         child: Row(
           children: [
             Container(
-              height: 40.0,
-              width: 40.0,
+              height: 80.0,
+              width: 80.0,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[300],
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                breed.id.toString(),
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+                borderRadius: BorderRadius.circular(8.0),
+                image: DecorationImage(
+                  image: NetworkImage(breed.imageUrl),
+                  fit: BoxFit.contain,
                 ),
               ),
+              alignment: Alignment.center,
             ),
             const SizedBox(width: 20.0),
             Expanded(
@@ -83,9 +80,13 @@ class _CategoryBuilderState extends State<CategoryBuilder> {
             ),
             IconButton(
                 onPressed: () async {
-                  SharedPreferences pref = await SharedPreferences.getInstance();
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
                   setState(() async {
-                    await  APIRepository().removeCategory(breed.id, pref.getString('accountID').toString() , pref.getString('token').toString());
+                    await APIRepository().removeCategory(
+                        breed.id,
+                        pref.getString('accountID').toString(),
+                        pref.getString('token').toString());
                   });
                 },
                 icon: const Icon(
