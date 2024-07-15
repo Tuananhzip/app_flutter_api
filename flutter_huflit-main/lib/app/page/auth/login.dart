@@ -4,12 +4,13 @@ import 'package:app_api/app/bloc/login/login_bloc.dart';
 import 'package:app_api/app/components/field_login_register.dart';
 import 'package:app_api/app/config/const.dart';
 import 'package:app_api/app/data/api.dart';
+import 'package:app_api/app/page/auth/forgot_password.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logger/logger.dart';
 import 'register.dart';
 import 'package:app_api/mainpage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../../data/sharepre.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,22 +72,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           ClipRRect(
                             child: Align(
                               alignment: Alignment.topCenter,
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: const Border(
-                                          bottom: BorderSide(
-                                              color: Colors.white,
-                                              width: 1.0))),
-                                  child: Image.asset(
-                                    urlLogo,
-                                    fit: BoxFit.cover,
-                                    height: 90,
-                                  ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: const Border(
+                                        bottom: BorderSide(
+                                            color: Colors.white, width: 1.0))),
+                                child: Image.asset(
+                                  urlLogo,
+                                  fit: BoxFit.cover,
+                                  height: 90,
                                 ),
                               ),
                             ),
@@ -95,10 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           fieldLoginRegister(
                               textEditingController: accountController,
                               labelText: 'Account',
+                              keyboardType: TextInputType.multiline,
                               iconData: Icons.account_circle),
                           fieldLoginRegister(
                               textEditingController: passwordController,
                               labelText: 'Password',
+                              keyboardType: TextInputType.multiline,
                               iconData: Icons.password,
                               isPassword: !isVisible,
                               suffixIcon: IconButton(
@@ -110,7 +108,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   icon: Icon(isVisible
                                       ? Icons.visibility
                                       : Icons.visibility_off))),
-                          spaceHeight(x: 2),
+                          TextButton(
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPasswordScreen())),
+                            child: const Text(
+                              'Forgot password?',
+                            ),
+                          ),
+                          spaceHeight(x: 1),
                           Row(
                             children: [
                               spaceWidth(),
@@ -119,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {
                                     context.read<LoginBloc>().add(
                                           LoginSubmitted(
-                                            accountController.text.trim(),
+                                            accountController.text,
                                             passwordController.text,
                                           ),
                                         );
@@ -145,8 +153,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      if (state is LoginLoading)
-                        const CircularProgressIndicator(),
                     ],
                   );
                 },

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
-Widget fieldLoginRegister(
-    {required TextEditingController textEditingController,
-    required String labelText,
-    required IconData iconData,
-    bool isPassword = false,
-    Widget? suffixIcon,
-    String? helperText,
-    String? errorText,
-    String? Function(String?)? validator,
-    void Function(String)? onChanged,
-    void Function()? onTap}) {
+Widget fieldLoginRegister({
+  required TextEditingController textEditingController,
+  required String labelText,
+  required IconData iconData,
+  bool isPassword = false,
+  Widget? suffixIcon,
+  String? helperText,
+  String? errorText,
+  String? Function(String?)? validator,
+  void Function(String)? onChanged,
+  void Function()? onTap,
+  TextInputType? keyboardType,
+}) {
   return Container(
     padding: const EdgeInsets.all(8),
     margin: const EdgeInsets.all(8),
@@ -20,6 +22,7 @@ Widget fieldLoginRegister(
     child: TextFormField(
       controller: textEditingController,
       obscureText: isPassword,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
           prefixIcon: Icon(iconData),
           suffixIcon: suffixIcon,

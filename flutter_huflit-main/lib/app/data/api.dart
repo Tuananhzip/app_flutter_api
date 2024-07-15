@@ -104,6 +104,73 @@ class APIRepository {
     }
   }
 
+  Future<ApiResponse> forgotPassword(
+      String accountID, String numberID, String password) async {
+    try {
+      final body = FormData.fromMap({
+        'accountID': accountID,
+        'numberID': numberID,
+        'newPass': password,
+      });
+
+      Response res = await api.sendRequest.put('/Auth/forgetPass',
+          options: Options(headers: header('no token')), data: body);
+      return ApiResponse.fromJson(res.data);
+    } on DioException catch (ex) {
+      if (ex.response?.statusCode == 400) {
+        Logger().e("Bad request: ${ex.response?.data}");
+        if (ex.response?.data['data'] == null) {
+          ex.response?.data['data'] = '';
+        }
+        return ApiResponse.fromJson(ex.response?.data);
+      }
+      rethrow;
+    }
+  }
+
+  Future<ApiResponse> updateProfile(User user, String token) async {
+    try {
+      final body = FormData.fromMap({
+        "numberID": user.idNumber,
+        "fullName": user.fullName,
+        "phoneNumber": user.phoneNumber,
+        "gender": user.gender,
+        "birthDay": user.birthDay,
+        "schoolYear": user.schoolYear,
+        "schoolKey": user.schoolKey,
+        "imageURL": user.imageURL,
+      });
+      Logger().f(body.fields);
+      Response res = await api.sendRequest.put('/Auth/updateProfile',
+          options: Options(headers: header(token)), data: body);
+      return ApiResponse.fromJson(res.data);
+    } on DioException catch (e) {
+      Logger().e(e.response?.data);
+      if (e.response?.data['data'] == null) {
+        e.response?.data['data'] = '';
+      }
+      return ApiResponse.fromJson(e.response?.data);
+    }
+  }
+
+  Future<ApiResponse> changePassword(
+      String oldPassword, String newPassword, String token) async {
+    try {
+      final body = FormData.fromMap({
+        "oldPassword": oldPassword,
+        "newPassword": newPassword,
+      });
+      Logger().f(body.fields);
+      Response res = await api.sendRequest.put('/Auth/ChangePassword',
+          options: Options(headers: header(token)), data: body);
+      return ApiResponse.fromJson(res.data);
+    } on DioException catch (e) {
+      Logger().e(e.response?.data);
+      return ApiResponse(
+          success: false, data: '', error: e.response?.data ?? '');
+    }
+  }
+
   Future<List<CategoryModel>> getCategory(
       String accountID, String token) async {
     try {
@@ -351,6 +418,16 @@ class APIRepository {
           .toList();
     } catch (ex) {
       print(ex);
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getListUser() async {
+    try {
+      final dynamic res = await api.sendRequest.get('/WWAdmin/listUser');
+      return res.data;
+    } catch (ex) {
+      Logger().e(ex);
       rethrow;
     }
   }

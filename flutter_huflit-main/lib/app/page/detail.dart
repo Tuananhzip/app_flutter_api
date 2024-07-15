@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:app_api/app/bloc/detail/detail_bloc.dart';
 import 'package:app_api/app/config/const.dart';
+import 'package:app_api/app/page/auth/change_password.dart';
+import 'package:app_api/app/page/auth/edit_profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import '../model/user.dart';
@@ -143,6 +146,40 @@ class _DetailState extends State<Detail> {
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: Divider(),
                       ),
+                      spaceHeight(),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ChangePassword(),
+                                  ),
+                                ),
+                                child: const Text('Change password'),
+                              ),
+                            ),
+                            spaceWidth(),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfile(user: user),
+                                  ),
+                                ),
+                                child: const Text('Edit Profile'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   );
                 } else if (state is DetailFailure) {

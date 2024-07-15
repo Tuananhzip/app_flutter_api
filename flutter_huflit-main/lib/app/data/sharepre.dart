@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:app_api/app/model/cart.dart';
 import 'package:app_api/app/page/auth/login.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/user.dart';
@@ -13,7 +14,7 @@ Future<bool> saveUser(User objUser) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String strUser = jsonEncode(objUser);
     prefs.setString('user', strUser);
-    print("Luu thanh cong: $strUser");
+    Logger().d("Luu thanh cong: $strUser");
     return true;
   } catch (e) {
     print(e);

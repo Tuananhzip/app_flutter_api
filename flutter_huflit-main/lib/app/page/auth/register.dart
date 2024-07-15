@@ -64,15 +64,29 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'Register Info',
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
-                    ),
+                  spaceHeight(),
+                  Stack(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Register Info',
+                          style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue),
+                        ),
+                      ),
+                      Positioned(
+                        left: 10,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   signUpWidget(context),
                 ],
@@ -122,6 +136,7 @@ class _RegisterState extends State<Register> {
                         textEditingController: _accountController,
                         labelText: "Account",
                         helperText: "Example: 21DH112345",
+                        keyboardType: TextInputType.multiline,
                         iconData: Icons.account_circle,
                         errorText:
                             state is ValidateAccountId ? state.message : null,
@@ -133,6 +148,7 @@ class _RegisterState extends State<Register> {
                       textEditingController: _passwordController,
                       labelText: "Password",
                       helperText: "Example: Abcde@123",
+                      keyboardType: TextInputType.multiline,
                       errorText:
                           state is ValidatePassword ? state.message : null,
                       isPassword: true,
@@ -146,6 +162,7 @@ class _RegisterState extends State<Register> {
                       textEditingController: _confirmPasswordController,
                       labelText: "Confirm password",
                       helperText: "Same as password",
+                      keyboardType: TextInputType.multiline,
                       errorText: state is ValidateConfirmPassword
                           ? state.message
                           : null,
@@ -161,6 +178,7 @@ class _RegisterState extends State<Register> {
                       textEditingController: _fullNameController,
                       labelText: "Full Name",
                       helperText: "Example: Nguyen Van A",
+                      keyboardType: TextInputType.name,
                       errorText:
                           state is ValidateFullName ? state.message : null,
                       iconData: Icons.short_text,
@@ -173,6 +191,7 @@ class _RegisterState extends State<Register> {
                         textEditingController: _numberIDController,
                         labelText: "NumberID",
                         helperText: "Example: 20173245",
+                        keyboardType: TextInputType.number,
                         errorText:
                             state is ValidateNumberId ? state.message : null,
                         iconData: Icons.key,
@@ -183,6 +202,7 @@ class _RegisterState extends State<Register> {
                     fieldLoginRegister(
                         textEditingController: _phoneNumberController,
                         labelText: "Phone Number",
+                        keyboardType: TextInputType.phone,
                         errorText:
                             state is ValidatePhoneNumber ? state.message : null,
                         helperText: "Example: 0123456789",
@@ -195,6 +215,7 @@ class _RegisterState extends State<Register> {
                         textEditingController: _birthDayController,
                         labelText: "Birth Day",
                         helperText: "Example: 01/01/2001",
+                        keyboardType: TextInputType.datetime,
                         errorText:
                             state is ValidateBirthDay ? state.message : null,
                         iconData: Icons.date_range,
@@ -220,6 +241,7 @@ class _RegisterState extends State<Register> {
                         textEditingController: _schoolYearController,
                         labelText: "School Year",
                         helperText: "Example: 2021-2025",
+                        keyboardType: TextInputType.number,
                         errorText:
                             state is ValidateSchoolYear ? state.message : null,
                         iconData: Icons.school,
@@ -231,6 +253,7 @@ class _RegisterState extends State<Register> {
                         textEditingController: _schoolKeyController,
                         labelText: "School Key",
                         helperText: "Example: K27",
+                        keyboardType: TextInputType.multiline,
                         errorText:
                             state is ValidateSchoolKey ? state.message : null,
                         iconData: Icons.vpn_key_outlined,
@@ -306,6 +329,7 @@ class _RegisterState extends State<Register> {
                     fieldLoginRegister(
                         textEditingController: _imageURL,
                         labelText: "Image URL (optional)",
+                        keyboardType: TextInputType.url,
                         iconData: Icons.image),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
