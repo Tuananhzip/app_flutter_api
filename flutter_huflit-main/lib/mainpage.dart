@@ -10,6 +10,7 @@ import 'package:app_api/app/page/detail.dart';
 import 'package:app_api/app/page/history/history_screen.dart';
 import 'package:app_api/app/page/home/home_screen.dart';
 import 'package:app_api/app/page/product/product_list.dart';
+import 'package:app_api/app/page/search/search_screen.dart';
 import 'package:app_api/app/route/page3.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,13 +61,17 @@ class _MainpageState extends State<Mainpage> {
         }
       case 1:
         {
-          return const HistoryScreen();
+          return const SearchScreen();
         }
       case 2:
         {
-          return const CartScreen();
+          return const HistoryScreen();
         }
       case 3:
+        {
+          return const CartScreen();
+        }
+      case 4:
         {
           return const Detail();
         }
@@ -218,6 +223,10 @@ class _MainpageState extends State<Mainpage> {
             const BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.history),

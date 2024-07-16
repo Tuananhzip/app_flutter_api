@@ -49,76 +49,78 @@ class _ProductDetailState extends State<ProductDetail> {
           style: styleVerySmall(),
         ),
       ),
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              SizedBox(
-                height: 250,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(widget.productModel.imageUrl),
-                ),
-              ),
-            ],
-          ),
-          Text(
-            widget.productModel.name,
-            style: styleMedium(),
-          ),
-          Container(
-            margin: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
+                SizedBox(
+                  height: 250,
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.blueAccent,
-                    ),
-                  ),
-                  child: Text(
-                    '${NumberFormat('#,##0').format(widget.productModel.price)} VND',
-                    style: styleMedium(size: 20),
+                    child: Image.network(widget.productModel.imageUrl),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () => _onSave(widget.productModel, context),
-                  child: Container(
-                    margin: const EdgeInsets.all(4),
-                    child: Row(
-                      children: [
-                        const Text('Add to cart'),
-                        spaceWidth(),
-                        const Icon(
-                          Icons.shopping_cart_outlined,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
             ),
-          ),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Hãng: ${widget.productModel.categoryName}',
-              style: styleMedium(color: Colors.blue, size: 18),
+            Text(
+              widget.productModel.name,
+              style: styleMedium(),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.productModel.description,
-              style: styleMedium(color: Colors.black54, size: 16),
+            Container(
+              margin: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    child: Text(
+                      '${NumberFormat('#,##0').format(widget.productModel.price)} VND',
+                      style: styleMedium(size: 20),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _onSave(widget.productModel, context),
+                    child: Container(
+                      margin: const EdgeInsets.all(4),
+                      child: Row(
+                        children: [
+                          const Text('Add to cart'),
+                          spaceWidth(),
+                          const Icon(
+                            Icons.shopping_cart_outlined,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Hãng: ${widget.productModel.categoryName}',
+                style: styleMedium(color: Colors.blue, size: 18),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.productModel.description,
+                style: styleMedium(color: Colors.black54, size: 16),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

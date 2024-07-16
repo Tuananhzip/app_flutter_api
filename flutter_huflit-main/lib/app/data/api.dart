@@ -369,6 +369,7 @@ class APIRepository {
   Future<bool> addBill(List<Cart> products, String token) async {
     var list = [];
     try {
+      if (products.isEmpty) return false;
       for (int i = 0; i < products.length; i++) {
         list.add({
           'productID': products[i].productID,
@@ -395,9 +396,6 @@ class APIRepository {
           .get('/Bill/getHistory', options: Options(headers: header(token)));
       List<BillModel> billList =
           res.data.map((e) => BillModel.fromJson(e)).cast<BillModel>().toList();
-      for (var i in billList) {
-        Logger().i(i.dateCreated);
-      }
       billList.sort((a, b) => b.dateCreated.compareTo(a.dateCreated));
 
       return billList;

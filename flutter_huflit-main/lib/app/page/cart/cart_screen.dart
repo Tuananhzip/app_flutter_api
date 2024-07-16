@@ -111,24 +111,35 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () async {
                 SharedPreferences pref = await SharedPreferences.getInstance();
                 List<Cart> temp = await _databaseHelper.products();
-                await APIRepository()
+                bool payment = await APIRepository()
                     .addBill(temp, pref.getString('token').toString());
                 _databaseHelper.clear();
-                Fluttertoast.showToast(
-                    msg: "Payment success",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.green,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
-                if (context.mounted) {
-                  setState(() {});
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Mainpage(index: 1),
-                      ));
+                if (payment) {
+                  Fluttertoast.showToast(
+                      msg: "Payment success",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                  if (context.mounted) {
+                    setState(() {});
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Mainpage(index: 1),
+                        ));
+                  }
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "Payment failed",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
                 }
               },
               child: const Row(

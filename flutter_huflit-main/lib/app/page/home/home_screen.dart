@@ -202,7 +202,12 @@ class _HomeBuilderState extends State<HomeBuilder> {
         margin: const EdgeInsets.all(12.0),
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0), color: Colors.grey[200]),
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: Colors.blue,
+            width: 2,
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

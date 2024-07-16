@@ -27,8 +27,12 @@ class MainApp extends StatelessWidget {
         child: BlocBuilder<LoginBloc, LoginState>(
           builder: (context, state) {
             if (state is LoginSuccess) {
-              return const Mainpage(
-                index: 0,
+              return const Mainpage(index: 0);
+            } else if (state is LoginLoading) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
               );
             } else {
               return const LoginScreen();

@@ -57,10 +57,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onAutoLogin(AppStarted event, Emitter<LoginState> emit) async {
+    emit(LoginLoading());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('user')) {
-      Logger().i(prefs.getString('user'));
-      emit(LoginSuccess());
+    if (prefs.containsKey('token')) {
+      String token = prefs.getString('token')!;
+      try {
+        final User current = await APIRepository().current(token);
+        await saveUser(current);
+        emit(LoginSuccess());
+      } catch (e) {
+        prefs.remove('token');
+        prefs.remove('user');
+        Logger().e(e);
+        emit(LoginInitial());
+      }
     } else {
       emit(LoginInitial());
     }
